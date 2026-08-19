@@ -1,0 +1,940 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1">
+
+  <title>
+    MindGuard AI
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="style.css">
+
+  <!-- Face Detection -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js">
+  </script>
+
+  <!-- Charts -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/chart.js">
+  </script>
+
+</head>
+
+
+<body>
+
+<main class="app">
+
+
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
+
+  <header>
+
+    <div>
+
+      <span class="badge">
+        AI WELLNESS MVP · PHASE 5
+      </span>
+
+      <h1>
+        MindGuard AI
+      </h1>
+
+      <p>
+        Multimodal wellness companion —
+        emotion, trends, safety and privacy.
+      </p>
+
+    </div>
+
+
+    <div
+      id="status"
+      class="status">
+
+      Camera off
+
+    </div>
+
+  </header>
+
+
+
+  <!-- =====================================================
+       CAMERA + TEXT CHECK-IN
+  ====================================================== -->
+
+  <section class="grid">
+
+
+    <!-- CAMERA -->
+
+    <div class="card camera-card">
+
+      <h2>
+        📷 Camera Check-in
+      </h2>
+
+
+      <div class="video-wrap">
+
+        <video
+          id="video"
+          autoplay
+          muted
+          playsinline>
+        </video>
+
+        <canvas
+          id="overlay">
+        </canvas>
+
+      </div>
+
+
+      <div class="row">
+
+        <button
+          id="startCamera">
+
+          Start Camera
+
+        </button>
+
+
+        <span id="faceSignal">
+
+          Expression signal:
+          waiting
+
+        </span>
+
+      </div>
+
+
+      <div
+        id="modelStatus"
+        class="model-status">
+
+        Expression AI model:
+        loading...
+
+      </div>
+
+
+      <small>
+
+        Facial-expression output is an
+        approximate signal, not a diagnosis.
+
+      </small>
+
+    </div>
+
+
+
+    <!-- TEXT ANALYSIS -->
+
+    <div class="card">
+
+      <h2>
+        💬 How are you feeling?
+      </h2>
+
+
+      <textarea
+        id="message"
+        placeholder="Example: I feel stressed about my exams today...">
+      </textarea>
+
+
+      <button
+        id="analyze">
+
+        Analyze & Support
+
+      </button>
+
+
+      <div class="result">
+
+
+        <div>
+
+          <span>
+            Text signal
+          </span>
+
+          <strong
+            id="textEmotion">
+
+            —
+
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Expression signal
+          </span>
+
+          <strong
+            id="faceEmotion">
+
+            —
+
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Concern score
+          </span>
+
+          <strong
+            id="score">
+
+            —
+
+          </strong>
+
+        </div>
+
+
+      </div>
+
+
+      <div
+        id="suggestion"
+        class="suggestion">
+
+        Your personalized suggestion
+        will appear here.
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- =====================================================
+       TREND + TRIGGERS
+  ====================================================== -->
+
+  <section class="dashboard-grid">
+
+
+    <!-- CONCERN TREND -->
+
+    <div class="card">
+
+      <div class="section-title">
+
+        <div>
+
+          <h2>
+            📈 Concern Trend
+          </h2>
+
+          <p class="muted">
+            Your recent check-in pattern.
+          </p>
+
+        </div>
+
+
+        <span
+          id="trendBadge"
+          class="trend neutral">
+
+          No data
+
+        </span>
+
+      </div>
+
+
+      <div class="chart-wrap">
+
+        <canvas
+          id="moodChart">
+        </canvas>
+
+      </div>
+
+
+      <div
+        id="trendText"
+        class="insight">
+
+        Complete a few check-ins
+        to see a trend.
+
+      </div>
+
+    </div>
+
+
+
+    <!-- RECURRING TRIGGERS -->
+
+    <div class="card">
+
+      <h2>
+        🔍 Recurring Triggers
+      </h2>
+
+      <p class="muted">
+
+        Topics that appear often
+        in your check-ins.
+
+      </p>
+
+
+      <div
+        id="triggers"
+        class="trigger-list">
+
+        <div class="empty">
+
+          No triggers detected yet.
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- =====================================================
+       SAFETY CHECK
+  ====================================================== -->
+
+  <section
+    class="card safety-card">
+
+
+    <div class="section-title">
+
+      <div>
+
+        <h2>
+          🛡️ MindGuard Safety Check
+        </h2>
+
+        <p class="muted">
+
+          An early-warning signal based
+          on recent check-ins.
+
+        </p>
+
+      </div>
+
+
+      <span
+        id="riskBadge"
+        class="risk-badge low">
+
+        🟢 Low
+
+      </span>
+
+    </div>
+
+
+    <!-- SAFETY METRICS -->
+
+    <div class="safety-grid">
+
+
+      <div>
+
+        <span class="muted">
+          Current safety level
+        </span>
+
+        <strong
+          id="riskLevel">
+
+          Low
+
+        </strong>
+
+      </div>
+
+
+      <div>
+
+        <span class="muted">
+          Risk score
+        </span>
+
+        <strong
+          id="riskScore">
+
+          0%
+
+        </strong>
+
+      </div>
+
+
+      <div>
+
+        <span class="muted">
+          Signal
+        </span>
+
+        <strong
+          id="riskSignal">
+
+          No concern detected
+
+        </strong>
+
+      </div>
+
+
+    </div>
+
+
+    <!-- SAFETY MESSAGE -->
+
+    <div
+      id="safetyMessage"
+      class="safety-message">
+
+      Your recent signals look
+      relatively stable.
+
+    </div>
+
+
+    <!-- SAFETY ACTIONS -->
+
+    <div
+      class="safety-actions">
+
+
+      <button
+        id="breathingBtn">
+
+        🫁 Start 60-second breathing
+
+      </button>
+
+
+      <button
+        id="supportBtn"
+        class="secondary">
+
+        🤝 Talk to someone you trust
+
+      </button>
+
+
+    </div>
+
+
+    <small>
+
+      This safety level is an AI-generated
+      wellness signal, not a medical diagnosis
+      or emergency assessment.
+
+    </small>
+
+  </section>
+
+
+
+  <!-- =====================================================
+       PHASE 5 — TRUSTED CONTACT
+  ====================================================== -->
+
+  <section
+    class="card trusted-card">
+
+
+    <div class="section-title">
+
+      <div>
+
+        <h2>
+          🤝 Trusted Contact
+        </h2>
+
+        <p class="muted">
+
+          Choose someone you trust
+          for optional support.
+
+        </p>
+
+      </div>
+
+
+      <span
+        id="contactStatus"
+        class="privacy-badge">
+
+        🔒 Private
+
+      </span>
+
+    </div>
+
+
+    <!-- CONTACT FORM -->
+
+    <div class="contact-grid">
+
+
+      <div>
+
+        <label
+          for="contactName">
+
+          Name
+
+        </label>
+
+
+        <input
+          id="contactName"
+          type="text"
+          placeholder="e.g. Alex">
+
+      </div>
+
+
+
+      <div>
+
+        <label
+          for="contactRelation">
+
+          Relationship
+
+        </label>
+
+
+        <input
+          id="contactRelation"
+          type="text"
+          placeholder="e.g. Friend">
+
+      </div>
+
+
+
+      <div>
+
+        <label
+          for="contactPhone">
+
+          Phone
+
+        </label>
+
+
+        <input
+          id="contactPhone"
+          type="tel"
+          placeholder="+91 XXXXX XXXXX">
+
+      </div>
+
+
+    </div>
+
+
+    <!-- CONTACT ACTIONS -->
+
+    <div
+      class="contact-actions">
+
+
+      <button
+        id="saveContact">
+
+        💾 Save Trusted Contact
+
+      </button>
+
+
+      <button
+        id="contactTrusted"
+        class="secondary">
+
+        📞 Contact Trusted Person
+
+      </button>
+
+
+      <button
+        id="removeContact"
+        class="danger">
+
+        Remove Contact
+
+      </button>
+
+
+    </div>
+
+
+    <div
+      id="contactMessage"
+      class="contact-message">
+
+      No trusted contact configured.
+
+    </div>
+
+
+    <small>
+
+      MindGuard will not automatically contact
+      anyone without your action.
+
+    </small>
+
+  </section>
+
+
+
+  <!-- =====================================================
+       PERSONALIZED WELLNESS SUPPORT
+  ====================================================== -->
+
+  <section class="card">
+
+
+    <div class="section-title">
+
+      <div>
+
+        <h2>
+          🌱 Personalized Wellness Support
+        </h2>
+
+        <p class="muted">
+
+          Suggestions are based on recent
+          signals, not a medical diagnosis.
+
+        </p>
+
+      </div>
+
+
+      <button
+        id="clearHistory"
+        class="secondary">
+
+        Clear History
+
+      </button>
+
+    </div>
+
+
+    <div
+      id="supportCards"
+      class="support-grid">
+
+
+      <div
+        class="support-card">
+
+        <b>
+          🫁 Breathing
+        </b>
+
+        <span>
+
+          Try a slow 60-second
+          breathing reset.
+
+        </span>
+
+      </div>
+
+
+      <div
+        class="support-card">
+
+        <b>
+          📝 Journaling
+        </b>
+
+        <span>
+
+          Write one thing that is
+          currently on your mind.
+
+        </span>
+
+      </div>
+
+
+      <div
+        class="support-card">
+
+        <b>
+          🚶 Small reset
+        </b>
+
+        <span>
+
+          Take a short break,
+          hydrate, and move around.
+
+        </span>
+
+      </div>
+
+
+    </div>
+
+  </section>
+
+
+
+  <!-- =====================================================
+       PHASE 5 — PRIVACY DASHBOARD
+  ====================================================== -->
+
+  <section
+    class="card privacy-card">
+
+
+    <div class="section-title">
+
+      <div>
+
+        <h2>
+          🔒 Privacy Dashboard
+        </h2>
+
+        <p class="muted">
+
+          Understand how MindGuard
+          handles your local data.
+
+        </p>
+
+      </div>
+
+
+      <span
+        class="privacy-badge">
+
+        🔐 Local-first
+
+      </span>
+
+    </div>
+
+
+    <!-- PRIVACY ITEMS -->
+
+    <div
+      class="privacy-grid">
+
+
+      <div
+        class="privacy-item">
+
+        <span>
+          📷 Camera
+        </span>
+
+        <strong>
+          Temporary
+        </strong>
+
+        <small>
+
+          Camera stream is used
+          during the active session.
+
+        </small>
+
+      </div>
+
+
+      <div
+        class="privacy-item">
+
+        <span>
+          📊 Mood History
+        </span>
+
+        <strong>
+          Local
+        </strong>
+
+        <small>
+
+          Check-ins are stored
+          in browser local storage.
+
+        </small>
+
+      </div>
+
+
+      <div
+        class="privacy-item">
+
+        <span>
+          🤝 Trusted Contact
+        </span>
+
+        <strong>
+          Local
+        </strong>
+
+        <small>
+
+          Contact details stay
+          in this browser.
+
+        </small>
+
+      </div>
+
+
+      <div
+        class="privacy-item">
+
+        <span>
+          ☁️ Cloud Upload
+        </span>
+
+        <strong>
+          Not used
+        </strong>
+
+        <small>
+
+          This MVP does not
+          upload your history.
+
+        </small>
+
+      </div>
+
+
+    </div>
+
+
+    <!-- PRIVACY ACTIONS -->
+
+    <div
+      class="privacy-actions">
+
+
+      <button
+        id="clearAllData"
+        class="danger">
+
+        🗑️ Clear All Local Data
+
+      </button>
+
+
+    </div>
+
+
+    <div
+      id="privacyMessage"
+      class="privacy-message">
+
+      Your MindGuard history and trusted
+      contact are stored locally in this browser.
+
+    </div>
+
+
+  </section>
+
+
+
+  <!-- =====================================================
+       RECENT CHECK-INS
+  ====================================================== -->
+
+  <section class="card">
+
+    <h2>
+      🕘 Recent Check-ins
+    </h2>
+
+
+    <div
+      id="history"
+      class="history">
+
+    </div>
+
+  </section>
+
+
+
+  <!-- =====================================================
+       FOOTER
+  ====================================================== -->
+
+  <footer>
+
+    MindGuard AI is a wellness-support
+    prototype, not a medical or emergency service.
+
+    <br>
+
+    Privacy-first · User-controlled ·
+    No automatic emergency contact
+
+  </footer>
+
+
+</main>
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+====================================================== -->
+
+<script src="app.js"></script>
+
+</body>
+
+</html>
