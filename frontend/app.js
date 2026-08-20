@@ -1720,17 +1720,14 @@ async function analyze() {
 
   }
 
-  catch (error) {
+ catch (error) {
 
-    console.error(
-      error
-    );
+  console.error(error);
 
-
-    alert(
-      "Could not connect to the backend. Make sure uvicorn is running on port 8000."
-    );
-  }
+  alert(
+    "Backend Error: " + error.message
+  );
+}
 }
 
 
